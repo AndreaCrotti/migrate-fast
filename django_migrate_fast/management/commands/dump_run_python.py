@@ -1,5 +1,6 @@
 import mock
 import inspect
+import yaml
 
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -52,3 +53,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         assert is_not_migrated(connection), "Need to run this on an empty database!"
         call_command('migrate')
+        yaml.dump(CREATED_FILES, open('runpython_dumps.yaml', 'w'))
