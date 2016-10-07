@@ -56,6 +56,7 @@ class Command(BaseCommand):
         migrated = set()
 
         execute_sql(connection, DJANGO_MIGRATIONS)
+        idx = 1
 
         for key in iterate_migrations(loader.graph):
             if key not in migrated:
@@ -64,4 +65,6 @@ class Command(BaseCommand):
                 for line in open(sql_file):
                     execute_sql(connection, line)
 
+                execute_sql(connection, insert_dj_migrations(idx, key[0], key[1]))
+                idx += 1
                 migrated.add(key)
