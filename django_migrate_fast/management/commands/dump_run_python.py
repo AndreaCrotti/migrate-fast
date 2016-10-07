@@ -23,14 +23,17 @@ class MyRunPython(migrations.RunPython):
             go_forward = super(MyRunPython, self).database_forwards(
                 app_label, schema_editor, from_state, to_state)
 
-        captured = [q['sql'] for q in queries.captured_queries]
+        # TODO: the utf-8 on Python3 is problematic though
+        captured = [q['sql'].encode('utf-8') for q in queries.captured_queries]
 
         if len(captured) > 0:
             lines = ["BEGIN"] + captured + ["COMMIT"]
             out_path = self.output_fname
-            assert out_path not in CREATED_FILES, "Two RunPython operations from the same file??"
+            if out_path in CREATED_FILES:
+                print("Two RunPython operations from the same file??")
+            # assert out_path not in CREATED_FILES, "Two RunPython operations from the same file??"
 
-            with open(out_path, 'w') as out:
+            with open(out_path, 'w+') as out:
                 for line in lines:
                     out.write("{};\n".format(line))
 
