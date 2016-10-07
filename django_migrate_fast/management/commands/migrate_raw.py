@@ -25,9 +25,9 @@ def insert_dj_migrations(index, app, name):
 
 def execute_sql(connection, sql):
     with connection.cursor() as cursor:
+        print("Executing {}".format(sql))
         cursor.execute(sql)
         row = cursor.fetchone()
-        print(row)
         return row
 
 
@@ -63,3 +63,5 @@ class Command(BaseCommand):
                 print("Loading file %s" % sql_file)
                 for line in open(sql_file):
                     execute_sql(connection, line)
+
+                migrated.add(key)
